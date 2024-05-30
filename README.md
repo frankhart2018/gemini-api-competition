@@ -1,5 +1,11 @@
 # Gemini API Competition
 
+## Time to competition end
+
+<p align="center">
+  <img src="http://i.countdownmail.com/3baikt.gif" />
+</p>
+
 ## Chat Systems Microservice
 
 ### Steps to run
