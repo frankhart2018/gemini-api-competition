@@ -7,3 +7,5 @@ RABBIT_PORT = os.getenv("RABBIT_PORT", 5672)
 
 LOGGER_URL = os.getenv("LOGGER_URL", None)
 LOGGER_TOKEN = os.getenv("LOGGER_TOKEN", None)
+
+MONGO_HOST = os.getenv("MONGO_HOST", "mongodb://localhost:27017/")

@@ -3,8 +3,8 @@ from argparse import Namespace
 from typing import Optional
 
 
-from gemini import GeminiAPIDao
-from queue_listener import QueueListener
+from chat_agents.gemini import GeminiAPIDao
+from chat_agents.queue_listener import QueueListener
 
 
 def main(args: Namespace):
