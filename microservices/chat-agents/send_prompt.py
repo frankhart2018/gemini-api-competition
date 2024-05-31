@@ -20,7 +20,7 @@ def main():
 
     channel.queue_declare(queue=QUEUE_NAME, durable=True)
 
-    message = json.dumps({"input": args.message})
+    message = json.dumps({"input": args.message, "state": "PROMPT"})
     channel.basic_publish(
         exchange="",
         routing_key=QUEUE_NAME,
