@@ -7,6 +7,7 @@ from singleton import singleton
 from environment import QUEUE_NAME, RABBIT_HOST, RABBIT_PORT
 from gemini import GeminiAPIDao
 from prompt_inputs import QueueRequest, StateMachineQueueRequest
+from logger import Logger, LogLevel
 
 
 @singleton
@@ -45,7 +46,10 @@ class QueueListener:
         except pydantic.ValidationError as pe:
             try:
                 request = QueueRequest(**body_decoded)
-            except pydantic.ValidationError as pe:
+            except pydantic.ValidationError:
+                Logger().log(
+                    log_level=LogLevel.ERROR, message=f"Invalid message: {body}"
+                )
                 ch.basic_ack(delivery_tag=method.delivery_tag)
         finally:
             model_response = self.__model.prompt(message=request.input)
