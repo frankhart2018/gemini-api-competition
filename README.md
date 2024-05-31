@@ -8,12 +8,23 @@
 
 ## Chat Systems Microservice
 
+### Software Requirements
+
+1. Docker
+2. Python (>= 3.10)
+
 ### Steps to run
 
 1. Run rabbitmq in docker:
 
 ```
 docker run -d -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.13-management
+```
+
+2. Install all dependencies:
+
+```
+pip install -r requirements.txt
 ```
 
 2. Run `gemini_executor.py` that consumes values from queue and prompts Gemini:
