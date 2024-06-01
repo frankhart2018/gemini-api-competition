@@ -2,8 +2,8 @@ import requests
 from datetime import datetime
 from enum import Enum
 
-from singleton import singleton
-from environment import LOGGER_URL, LOGGER_TOKEN
+from .singleton import singleton
+from .environment import LOGGER_URL, LOGGER_TOKEN
 
 
 class LogLevel(Enum):

@@ -1,9 +1,9 @@
 import google.generativeai as genai
 from typing import Optional
 
-from constants import GEMINI_MODEL
-from singleton import singleton
-from logger import Logger, LogLevel
+from .constants import GEMINI_MODEL
+from .singleton import singleton
+from .logger import Logger, LogLevel
 
 
 @singleton

@@ -2,12 +2,20 @@ import pika
 from pika.adapters.blocking_connection import BlockingChannel
 import json
 import pydantic
+from typing import Optional, Union
 
-from singleton import singleton
-from environment import QUEUE_NAME, RABBIT_HOST, RABBIT_PORT
-from gemini import GeminiAPIDao
-from prompt_inputs import QueueRequest, StateMachineQueueRequest
-from logger import Logger, LogLevel
+from .singleton import singleton
+from .environment import QUEUE_NAME, RABBIT_HOST, RABBIT_PORT
+from .gemini import GeminiAPIDao
+from .prompt_inputs import QueueRequest, StateMachineQueueRequest
+from .logger import Logger, LogLevel
+from .state_handlers import Handler, PromptHandler
+from .prompt_inputs import PromptState
+
+
+def prompt_handler_factory(state: PromptState, model: GeminiAPIDao) -> Handler:
+    if state == PromptState.PROMPT:
+        return PromptHandler(model=model)
 
 
 @singleton
@@ -41,6 +49,7 @@ class QueueListener:
     def message_processor(self, ch, method, _properties, body):
         body_decoded = json.loads(body.decode())
 
+        request: Optional[Union[QueueRequest, StateMachineQueueRequest]] = None
         try:
             request = StateMachineQueueRequest(**body_decoded)
         except pydantic.ValidationError as pe:
@@ -50,10 +59,13 @@ class QueueListener:
                 Logger().log(
                     log_level=LogLevel.ERROR, message=f"Invalid message: {body}"
                 )
+                # At this point the request is unprocessable
                 ch.basic_ack(delivery_tag=method.delivery_tag)
-        finally:
-            model_response = self.__model.prompt(message=request.input)
-            print(f"You: {request.input}")
-            print(f"Gemini: {model_response}")  # Replace this with mongo insert call
+                return
+
+        if request:
+            handler = prompt_handler_factory(state=request.state, model=self.__model)
+            handler.execute(request)
+            handler.transition(request)
 
             ch.basic_ack(delivery_tag=method.delivery_tag)

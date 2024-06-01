@@ -4,7 +4,7 @@ import pika
 import json
 import argparse
 
-from environment import RABBIT_HOST, RABBIT_PORT, QUEUE_NAME
+from chat_agents.environment import RABBIT_HOST, RABBIT_PORT, QUEUE_NAME
 
 
 def main():
