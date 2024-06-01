@@ -19,8 +19,13 @@ class QueueRequest(BaseModel):
     input: str
     state: PromptState
 
+    class Config:
+        use_enum_values = True
+
 
 class StateMachineQueueRequest(QueueRequest):
     from_uid: str
     to_uid: str
+    your_summary: str
+    their_summary: str
     previous_response: Optional[str] = ""

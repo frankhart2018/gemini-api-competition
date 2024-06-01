@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 from ..singleton import singleton
 from ..gemini import GeminiAPIDao
@@ -11,11 +11,19 @@ class PromptHandler(Handler):
     def __init__(self, model: GeminiAPIDao) -> None:
         self.__model = model
 
-    def execute(self, prompt_request: Union[QueueRequest, StateMachineQueueRequest]):
+    def execute(
+        self, prompt_request: Union[QueueRequest, StateMachineQueueRequest]
+    ) -> Optional[str]:
         model_response = self.__model.prompt(message=prompt_request.input)
         print(f"You: {prompt_request.input}")
         print(f"Gemini: {model_response}")  # Replace this with mongo insert call
 
-    def transition(self, prompt_request: Union[QueueRequest, StateMachineQueueRequest]):
+        return None
+
+    def transition(
+        self,
+        prompt_request: Union[QueueRequest, StateMachineQueueRequest],
+        model_output: Optional[str] = None,
+    ):
         # No transition function from PROMPT state
         pass
