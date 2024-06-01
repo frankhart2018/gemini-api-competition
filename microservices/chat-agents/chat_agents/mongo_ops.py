@@ -1,7 +1,8 @@
 import pymongo
 from pymongo.collection import Collection
 from pymongo.results import UpdateResult
-from typing import Union
+from typing import Union, Optional
+from bson.objectid import ObjectId
 
 from .singleton import singleton
 from .environment import MONGO_HOST
@@ -28,9 +29,12 @@ class PromptInputDao:
 
     def upsert(
         self,
-        prompt_id: str,
         prompt_input: Union[QueueRequest, StateMachineQueueRequest],
+        prompt_id: Optional[str] = None,
     ) -> UpdateResult:
+        if prompt_id is None:
+            prompt_id = ObjectId()
+
         return self.__collection.update_one(
             {"_id": prompt_id}, {"$set": prompt_input.model_dump()}, upsert=True
         )

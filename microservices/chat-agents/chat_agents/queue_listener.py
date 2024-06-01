@@ -9,13 +9,27 @@ from .environment import QUEUE_NAME, RABBIT_HOST, RABBIT_PORT
 from .gemini import GeminiAPIDao
 from .prompt_inputs import QueueRequest, StateMachineQueueRequest
 from .logger import Logger, LogLevel
-from .state_handlers import Handler, PromptHandler
+from .state_handlers import (
+    Handler,
+    PromptHandler,
+    CommenceHandlder,
+    CommunicationHandler,
+)
+from .state_handlers import AskGeminiHandler, AskUserHandler, TerminalHandler
 from .prompt_inputs import PromptState
 
 
 def prompt_handler_factory(state: PromptState, model: GeminiAPIDao) -> Handler:
-    if state == PromptState.PROMPT:
-        return PromptHandler(model=model)
+    handler = {
+        PromptState.PROMPT: PromptHandler,
+        PromptState.COMMENCE: CommenceHandlder,
+        PromptState.COMMUNICATE: CommunicationHandler,
+        PromptState.ASK_GEMINI: AskGeminiHandler,
+        PromptState.ASK_USER: AskUserHandler,
+        PromptState.TERMINAL: TerminalHandler,
+    }
+
+    return handler[state](model=model)
 
 
 @singleton
@@ -65,7 +79,7 @@ class QueueListener:
 
         if request:
             handler = prompt_handler_factory(state=request.state, model=self.__model)
-            handler.execute(request)
-            handler.transition(request)
+            response = handler.execute(request)
+            handler.transition(prompt_request=request, model_output=response)
 
             ch.basic_ack(delivery_tag=method.delivery_tag)
