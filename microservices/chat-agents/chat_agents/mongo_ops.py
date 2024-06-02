@@ -36,5 +36,7 @@ class PromptInputDao:
             prompt_id = ObjectId()
 
         return self.__collection.update_one(
-            {"_id": prompt_id}, {"$set": prompt_input.model_dump()}, upsert=True
+            {"_id": ObjectId(prompt_id)},
+            {"$set": prompt_input.model_dump()},
+            upsert=True,
         )

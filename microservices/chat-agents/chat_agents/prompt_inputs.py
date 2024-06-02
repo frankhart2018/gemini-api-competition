@@ -26,6 +26,9 @@ class QueueRequest(BaseModel):
 class StateMachineQueueRequest(QueueRequest):
     from_uid: str
     to_uid: str
-    your_summary: str
-    their_summary: str
+    u1_summary: str
+    u2_summary: str
+    target: str
+    questions: Optional[str] = ""
     previous_response: Optional[str] = ""
+    interaction_id: Optional[str] = ""
