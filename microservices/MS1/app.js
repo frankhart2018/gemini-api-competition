@@ -4,6 +4,7 @@ import connectDB from './config/db.js';
 import dotenv from 'dotenv';
 import UsersController from './controllers/users/user-controller.js';
 import ProfileController from "./controllers/profiles/profile-controller.js";
+import QuestionController from "./controllers/questions/question-controller.js";
 // Load config
 dotenv.config();
 
@@ -15,12 +16,12 @@ const corsOptions = {
     };
     const app = express();
     // Connect Database
-    connectDB();
+    await connectDB();
 
     app.use(cors(corsOptions));
     app.use(express.json());
   
 UsersController(app);
 ProfileController(app);
-
+QuestionController(app);
 app.listen(process.env.PORT || 4000);
