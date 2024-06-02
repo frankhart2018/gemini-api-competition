@@ -2,8 +2,9 @@ from typing import Union, Optional
 
 from ..singleton import singleton
 from ..gemini import GeminiAPIDao
-from ..prompt_inputs import QueueRequest, StateMachineQueueRequest
+from ..prompt_inputs import QueueRequest, StateMachineQueueRequest, PromptState
 from ..logger import Logger, LogLevel
+from ..queue.publisher import publish_message
 from .handler import Handler
 
 
@@ -33,11 +34,11 @@ generate that."""
             return None
 
         prompt = self.__prompt_template.format(
-            your_summary=prompt_request.your_summary,
-            their_summary=prompt_request.their_summary,
+            your_summary=prompt_request.u1_summary,
+            their_summary=prompt_request.u2_summary,
         )
         model_response = self.__model.prompt(message=prompt)
-        print("Model response: ", model_response)
+        print(f"COMMENCE: {model_response}")
         return model_response
 
     def transition(
@@ -45,4 +46,14 @@ generate that."""
         prompt_request: Union[QueueRequest, StateMachineQueueRequest],
         model_output: Optional[str] = None,
     ) -> None:
-        pass
+        questions = super()._extract_text_between_tags(model_output, "ASK")
+
+        if len(questions) > 0:
+            transition_request = prompt_request.model_copy(deep=True)
+            transition_request.target = "u2"
+            transition_request.questions = questions
+            transition_request.previous_response = model_output
+            transition_request.state = PromptState.ASK_GEMINI
+            publish_message(message=transition_request)
+        else:
+            pass  # Transition to COMM

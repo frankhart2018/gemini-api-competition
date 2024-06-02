@@ -4,36 +4,16 @@ import json
 import pydantic
 from typing import Optional, Union
 
-from .singleton import singleton
-from .environment import QUEUE_NAME, RABBIT_HOST, RABBIT_PORT
-from .gemini import GeminiAPIDao
-from .prompt_inputs import QueueRequest, StateMachineQueueRequest
-from .logger import Logger, LogLevel
-from .state_handlers import (
-    Handler,
-    PromptHandler,
-    CommenceHandlder,
-    CommunicationHandler,
-)
-from .state_handlers import AskGeminiHandler, AskUserHandler, TerminalHandler
-from .prompt_inputs import PromptState
-
-
-def prompt_handler_factory(state: PromptState, model: GeminiAPIDao) -> Handler:
-    handler = {
-        PromptState.PROMPT: PromptHandler,
-        PromptState.COMMENCE: CommenceHandlder,
-        PromptState.COMMUNICATE: CommunicationHandler,
-        PromptState.ASK_GEMINI: AskGeminiHandler,
-        PromptState.ASK_USER: AskUserHandler,
-        PromptState.TERMINAL: TerminalHandler,
-    }
-
-    return handler[state](model=model)
+from ..singleton import singleton
+from ..environment import QUEUE_NAME, RABBIT_HOST, RABBIT_PORT
+from ..gemini import GeminiAPIDao
+from ..prompt_inputs import QueueRequest, StateMachineQueueRequest
+from ..logger import Logger, LogLevel
+from ..handler_factory import prompt_handler_factory
 
 
 @singleton
-class QueueListener:
+class Consumer:
     def __init__(self, model: GeminiAPIDao) -> None:
         self.__channel = self.__init_channel()
         self.__model = model
