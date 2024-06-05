@@ -58,4 +58,8 @@ If you add <ANS>[answer]</ANS> do not copy the <ASK>[question]</ASK>.
             transition_request.state = PromptState.ASK_USER
             publish_message(message=transition_request)
         else:
-            pass  # Transition to COMM
+            transition_request = prompt_request.model_copy(deep=True)
+            transition_request.previous_response = model_output
+            transition_request.target = "u1" if prompt_request.target == "u2" else "u2"
+            transition_request.state = PromptState.COMMUNICATE
+            publish_message(message=transition_request)
