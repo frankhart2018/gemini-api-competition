@@ -16,6 +16,17 @@ class CommunicationHandler(Handler):
     def execute(
         self, prompt_request: Union[QueueRequest, StateMachineQueueRequest]
     ) -> Optional[str]:
+        if (
+            isinstance(prompt_request, QueueRequest)
+            and type(prompt_request) != StateMachineQueueRequest
+        ):
+            Logger().log(
+                LogLevel.ERROR,
+                "COMMUNICATE HANDLER: QueueRequest is not supported, must be StateMachineQueueRequest",
+            )
+            return None
+
+        print(f"COMMUNICATE: {prompt_request}")
         return None
 
     def transition(

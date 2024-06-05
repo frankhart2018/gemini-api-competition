@@ -56,4 +56,8 @@ generate that."""
             transition_request.state = PromptState.ASK_GEMINI
             publish_message(message=transition_request)
         else:
-            pass  # Transition to COMM
+            transition_request = prompt_request.model_copy(deep=True)
+            transition_request.target = "u2"
+            transition_request.previous_response = model_output
+            transition_request.state = PromptState.COMMUNICATE
+            publish_message(message=transition_request)
