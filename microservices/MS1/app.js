@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import UsersController from './controllers/users/user-controller.js';
 import ProfileController from "./controllers/profiles/profile-controller.js";
 import QuestionController from "./controllers/questions/question-controller.js";
+import UserAnswerController from "./controllers/userAnswers/useranswer-controller.js";
 // Load config
 dotenv.config();
 
@@ -24,4 +25,5 @@ const corsOptions = {
 UsersController(app);
 ProfileController(app);
 QuestionController(app);
+UserAnswerController(app);
 app.listen(process.env.PORT || 4000);
