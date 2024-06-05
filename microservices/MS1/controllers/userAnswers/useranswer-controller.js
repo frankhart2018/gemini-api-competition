@@ -17,11 +17,11 @@ const createUpdateUserAnswer = async (req, res) => {
         //insert user_id or update if already exists
         const userPresent = await userAnswerDao.findUser(userId);
         if(!userPresent){
-            await userAnswerDao.createUserAnswer(userId, questionAnsObj);
-            return res.status(201).send({ message: "User answer created successfully" });
+           // user not present return 404
+           return res.status(404).send({ message: "User not found" });
         }
-        await userAnswerDao.updateUserAnswer(userId, questionAnsObj);
-        res.send({ message: "User answer updated successfully" });
+        await userAnswerDao.createOrUpdateUserAnswer(userId, questionAnsObj);
+        res.send({ message: "User info added successfully" });
     } catch (err) {
         res.status(500).send({ message: "An error occurred" });
     }
