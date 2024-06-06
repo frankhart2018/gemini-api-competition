@@ -7,3 +7,5 @@ QUEUE_NAME = os.getenv("GEMINI_MESSAGING_QUEUE_NAME", "gemini-messaging")
 
 LOGGER_URL = os.getenv("LOGGER_URL", None)
 LOGGER_TOKEN = os.getenv("LOGGER_TOKEN", None)
+
+MONGO_HOST = os.getenv("MONGO_HOST", "mongodb://localhost:27017")

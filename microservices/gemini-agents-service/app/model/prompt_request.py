@@ -7,5 +7,5 @@ class PromptHTTPRequest(BaseModel):
 
 
 class PromptRabbitRequest(BaseModel):
-    prompt: str
+    input: str
     state: str
