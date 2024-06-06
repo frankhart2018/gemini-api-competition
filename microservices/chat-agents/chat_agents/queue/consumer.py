@@ -60,6 +60,8 @@ class Consumer:
         if request:
             handler = prompt_handler_factory(state=request.state, model=self.__model)
             response = handler.execute(request)
-            handler.transition(prompt_request=request, model_output=response)
+
+            if response:
+                handler.transition(prompt_request=request, model_output=response)
 
             ch.basic_ack(delivery_tag=method.delivery_tag)

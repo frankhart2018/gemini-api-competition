@@ -5,10 +5,11 @@ from ..gemini import GeminiAPIDao
 from ..prompt_inputs import QueueRequest, StateMachineQueueRequest
 from ..logger import Logger, LogLevel
 from ..mongo_ops import PromptInputDao
+from ..prompt_inputs import PromptState
+from ..queue.publisher import publish_message
 from .handler import Handler
 
 
-# TODO: Implement this
 @singleton
 class AskUserHandler(Handler):
     def __init__(self, model: GeminiAPIDao) -> None:
@@ -27,23 +28,31 @@ class AskUserHandler(Handler):
             )
             return None
 
-        questions = super()._extract_text_between_tags(prompt_request.questions, "ASK")
+        q_and_a_s = prompt_request.q_and_a_s
+        answered_q_and_a_s = []
+        unanswered_q_and_a_s = []
 
-        if len(questions) == 0:
+        for q_and_a in q_and_a_s:
+            if q_and_a.answer:
+                answered_q_and_a_s.append(q_and_a)
+            else:
+                unanswered_q_and_a_s.append(q_and_a)
+
+        if len(unanswered_q_and_a_s) == 0:
+            print(f"ASK_USER: No questions to ask!")
+            return "To COMM"
+        else:
+            PromptInputDao().upsert(
+                prompt_input=prompt_request, prompt_id=prompt_request.interaction_id
+            )
+            print(f"ASK_USER: Posted to user!")
             return None
-
-        PromptInputDao().upsert(
-            prompt_input=prompt_request, prompt_id=prompt_request.interaction_id
-        )
-        print(f"ASK_USER: Posted to user!")
-        return None
 
     def transition(
         self,
         prompt_request: Union[QueueRequest, StateMachineQueueRequest],
-        model_output: Optional[str] = None,
+        model_output: str,
     ) -> None:
-        questions = super()._extract_text_between_tags(model_output, "ASK")
-
-        if len(questions) == 0:
-            pass  # Transition to COMM
+        transition_request = prompt_request.model_copy(deep=True)
+        transition_request.state = PromptState.COMMUNICATE
+        publish_message(message=transition_request)

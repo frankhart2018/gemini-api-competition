@@ -23,7 +23,7 @@ class PromptHandler(Handler):
     def transition(
         self,
         prompt_request: Union[QueueRequest, StateMachineQueueRequest],
-        model_output: Optional[str] = None,
+        model_output: str,
     ):
         # No transition function from PROMPT state
         pass

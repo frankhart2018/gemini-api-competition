@@ -1,8 +1,9 @@
 import pymongo
 from pymongo.collection import Collection
 from pymongo.results import UpdateResult
-from typing import Union, Optional
+from typing import Union, Optional, List
 from bson.objectid import ObjectId
+import pydantic
 
 from .singleton import singleton
 from .environment import MONGO_HOST
@@ -40,3 +41,18 @@ class PromptInputDao:
             {"$set": prompt_input.model_dump()},
             upsert=True,
         )
+
+    def get_prompt_input(
+        self, prompt_id: str
+    ) -> Optional[Union[QueueRequest, StateMachineQueueRequest]]:
+        result = self.__collection.find_one({"_id": ObjectId(prompt_id)})
+        if result is None:
+            return None
+
+        try:
+            return StateMachineQueueRequest(**result)
+        except pydantic.ValidationError as pe:
+            try:
+                return QueueRequest(**result)
+            except pydantic.ValidationError:
+                return None
