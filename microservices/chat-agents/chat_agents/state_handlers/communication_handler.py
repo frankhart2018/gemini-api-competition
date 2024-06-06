@@ -5,7 +5,7 @@ from ..gemini import GeminiAPIDao
 from ..prompt_inputs import QueueRequest, StateMachineQueueRequest, PromptState, QAndA
 from ..logger import Logger, LogLevel
 from ..queue.publisher import publish_message
-from ..constants import MAX_INTERACTIONS
+from ..environment import MAX_INTERACTIONS
 from .handler import Handler
 
 
