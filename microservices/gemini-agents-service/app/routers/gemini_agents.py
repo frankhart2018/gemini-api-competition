@@ -9,7 +9,9 @@ router = APIRouter()
 
 @router.post("/prompt", tags=["gemini-agents"])
 async def prompt(prompt_http_request: PromptHTTPRequest):
-    rabbit_request = PromptRabbitRequest(prompt=prompt_http_request.prompt)
+    rabbit_request = PromptRabbitRequest(
+        prompt=prompt_http_request.prompt, state="PROMPT"
+    )
     publish_status = publish_message(message=rabbit_request.model_dump_json())
 
     return {"status": publish_status}

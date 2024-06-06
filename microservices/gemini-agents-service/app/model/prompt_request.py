@@ -8,4 +8,4 @@ class PromptHTTPRequest(BaseModel):
 
 class PromptRabbitRequest(BaseModel):
     prompt: str
-    state: Optional[str] = "PROMPT"
+    state: str
