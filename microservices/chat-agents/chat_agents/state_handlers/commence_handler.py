@@ -2,7 +2,7 @@ from typing import Union, Optional
 
 from ..singleton import singleton
 from ..gemini import GeminiAPIDao
-from ..prompt_inputs import QueueRequest, StateMachineQueueRequest, PromptState
+from ..prompt_inputs import QueueRequest, StateMachineQueueRequest, PromptState, QAndA
 from ..logger import Logger, LogLevel
 from ..queue.publisher import publish_message
 from .handler import Handler
@@ -44,19 +44,21 @@ generate that."""
     def transition(
         self,
         prompt_request: Union[QueueRequest, StateMachineQueueRequest],
-        model_output: Optional[str] = None,
+        model_output: str,
     ) -> None:
         questions = super()._extract_text_between_tags(model_output, "ASK")
+        transition_request = prompt_request.model_copy(deep=True)
+        transition_request.interaction_length += 1
 
         if len(questions) > 0:
-            transition_request = prompt_request.model_copy(deep=True)
             transition_request.target = "u2"
-            transition_request.questions = questions
+            transition_request.q_and_a_s = [
+                QAndA(question=question) for question in questions
+            ]
             transition_request.previous_response = model_output
             transition_request.state = PromptState.ASK_GEMINI
             publish_message(message=transition_request)
         else:
-            transition_request = prompt_request.model_copy(deep=True)
             transition_request.target = "u2"
             transition_request.previous_response = model_output
             transition_request.state = PromptState.COMMUNICATE

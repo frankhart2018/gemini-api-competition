@@ -1,6 +1,6 @@
 from pydantic import BaseModel, field_validator
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 
 class PromptState(Enum):
@@ -23,12 +23,18 @@ class QueueRequest(BaseModel):
         use_enum_values = True
 
 
+class QAndA(BaseModel):
+    question: str
+    answer: Optional[str] = ""
+
+
 class StateMachineQueueRequest(QueueRequest):
-    from_uid: str
-    to_uid: str
+    u1_uid: str
+    u2_uid: str
     u1_summary: str
     u2_summary: str
     target: str
-    questions: Optional[str] = ""
+    q_and_a_s: Optional[List[QAndA]] = []
     previous_response: Optional[str] = ""
     interaction_id: Optional[str] = ""
+    interaction_length: Optional[int] = 0
