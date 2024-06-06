@@ -4,9 +4,9 @@ import argparse
 import pika
 from bson import ObjectId
 
-from chat_agents.mongo_ops import PromptInputDao
-from chat_agents.prompt_inputs import QueueRequest, StateMachineQueueRequest
-from chat_agents.environment import RABBIT_HOST, RABBIT_PORT, QUEUE_NAME
+from chat_agents_executor.mongo_ops import PromptInputDao
+from chat_agents_executor.prompt_inputs import QueueRequest, StateMachineQueueRequest
+from chat_agents_executor.environment import RABBIT_HOST, RABBIT_PORT, QUEUE_NAME
 
 
 def main():
