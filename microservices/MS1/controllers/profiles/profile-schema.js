@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 
+const FriendSchema = mongoose.Schema({
+    receiverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    status: { type: String, enum: ['pending', 'accepted', 'declined'], required: true }
+  });
+
 const ProfileSchema = mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -13,6 +18,7 @@ const ProfileSchema = mongoose.Schema({
   age:{
     type: Number,
   },
+  friends: [FriendSchema],
 //   profilePicture: {
 //     type: String,
 //   },
