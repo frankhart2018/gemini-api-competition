@@ -6,6 +6,18 @@
   <img src="http://i.countdownmail.com/3baikt.gif" />
 </p>
 
+## Frontend Setup
+
+### Software requirements
+
+Node Js
+
+#### Steps to Follow
+
+1. cd Frontend/gemini-chat-app
+2. npm install / npm i (to install dependencies)
+3. npm run dev
+
 ## Chat Systems Microservice
 
 ### Software Requirements
