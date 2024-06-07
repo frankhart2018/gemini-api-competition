@@ -52,3 +52,18 @@ python send_prompt.py <PROMPT>
 ```
 
 At this point you should see the output of Gemini from `gemini_executor.py`.
+
+
+## MS1
+
+### Software Requirements
+
+1. MongoDB
+2. Node Js
+
+### Steps to run
+1. cd MS1
+2. Either run `mongod --config /opt/homebrew/etc/mongod.conf` to run the MongoDB server locally on your machine( Make sure you have MongoDB compass installed to view the database) or you can use MongoDB Atlas to create a cluster and connect to it. 
+3. In case you are using MongoDB Atlas, you need to add username and password of your cluster into .env file in the MS1 directory.
+4. npm install
+5. npm start
