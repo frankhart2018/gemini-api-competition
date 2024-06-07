@@ -4,7 +4,7 @@ const ProfileController = (app) => {
     app.post("/api/profile", createUpdateProfile);
     app.get("/api/profile/:userId", getProfile);
     app.post("/api/friends/request", sendFriendRequest);
-    app.post("/api/friends/requests/respond", respondToFriendRequest);
+    app.post("/api/friends/request/respond", respondToFriendRequest);
     app.get("/api/friends/:userId", getFriends);
 }
 
