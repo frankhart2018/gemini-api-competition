@@ -19,7 +19,7 @@ async def prompt(prompt_http_request: PromptHTTPRequest):
     rabbit_request = PromptRabbitRequest(
         input=prompt_http_request.prompt, state="PROMPT"
     )
-    publish_status = publish_message(message=rabbit_request.model_dump_json())
+    publish_status = publish_message(message=rabbit_request)
 
     return {"status": publish_status}
 
@@ -35,7 +35,7 @@ async def chat(initiate_chat_http_request: InitiateChatHTTPRequest):
         u2_summary=initiate_chat_http_request.u2_summary,
         target="u1",
     )
-    publish_status = publish_message(message=rabbit_request.model_dump_json())
+    publish_status = publish_message(message=rabbit_request)
 
     return {"status": publish_status}
 
@@ -48,9 +48,6 @@ async def chat_revert(
     result = PromptInputDao().update_questions_answers(
         interaction_id=interaction_id, q_and_a_s=q_and_a_s
     )
-    import json
-
-    print(json.dumps(result, indent=2, default=str))
 
     if result is None:
         return HTTPException(
@@ -59,7 +56,7 @@ async def chat_revert(
 
     try:
         rabbit_request = RevertChatRabbitRequest(**result)
-        publish_status = publish_message(message=rabbit_request.model_dump_json())
+        publish_status = publish_message(message=rabbit_request)
 
         return {"status": publish_status}
     except Exception as e:
