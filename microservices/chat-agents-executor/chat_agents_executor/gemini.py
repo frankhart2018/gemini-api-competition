@@ -1,9 +1,8 @@
 import google.generativeai as genai
 from typing import Optional
-
-from .constants import GEMINI_MODEL
-from .singleton import singleton
-from .logger import Logger, LogLevel
+from persona_sync_pylib.utils.environment import GEMINI_MODEL
+from persona_sync_pylib.utils.singleton import singleton
+from persona_sync_pylib.utils.logger import Logger, LogLevel
 
 
 @singleton

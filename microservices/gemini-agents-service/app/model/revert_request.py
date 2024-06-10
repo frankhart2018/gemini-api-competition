@@ -1,13 +1,11 @@
 from pydantic import BaseModel
 from typing import List
-
-from app.model.common import QAndA
-from app.model.initiate_request import InitiateChatRabbitRequest
+from persona_sync_pylib.utils.prompt_inputs import QAndA, StateMachineQueueRequest
 
 
 class RevertChatHTTPRequest(BaseModel):
     q_and_a_s: List[QAndA]
 
 
-class RevertChatRabbitRequest(InitiateChatRabbitRequest):
+class RevertChatRabbitRequest(StateMachineQueueRequest):
     pass

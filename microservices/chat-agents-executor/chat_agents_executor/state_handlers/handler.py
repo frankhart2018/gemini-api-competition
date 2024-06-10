@@ -1,7 +1,6 @@
 from typing import Union, Optional, List
 import re
-
-from ..prompt_inputs import QueueRequest, StateMachineQueueRequest
+from persona_sync_pylib.utils.prompt_inputs import QueueRequest, StateMachineQueueRequest
 
 
 class Handler:

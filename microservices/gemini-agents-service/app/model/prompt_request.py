@@ -1,11 +1,10 @@
 from pydantic import BaseModel
-from typing import Optional
+from persona_sync_pylib.utils.prompt_inputs import QueueRequest
 
 
 class PromptHTTPRequest(BaseModel):
     prompt: str
 
 
-class PromptRabbitRequest(BaseModel):
-    input: str
-    state: str
+class PromptRabbitRequest(QueueRequest):
+    pass

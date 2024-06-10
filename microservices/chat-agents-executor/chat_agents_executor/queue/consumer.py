@@ -3,12 +3,12 @@ from pika.adapters.blocking_connection import BlockingChannel
 import json
 import pydantic
 from typing import Optional, Union
+from persona_sync_pylib.utils.singleton import singleton
+from persona_sync_pylib.utils.environment import QUEUE_NAME, RABBIT_HOST, RABBIT_PORT
+from persona_sync_pylib.utils.prompt_inputs import QueueRequest, StateMachineQueueRequest
+from persona_sync_pylib.utils.logger import Logger, LogLevel
 
-from ..singleton import singleton
-from ..environment import QUEUE_NAME, RABBIT_HOST, RABBIT_PORT
 from ..gemini import GeminiAPIDao
-from ..prompt_inputs import QueueRequest, StateMachineQueueRequest
-from ..logger import Logger, LogLevel
 from ..handler_factory import prompt_handler_factory
 
 

@@ -1,3 +1,5 @@
+from persona_sync_pylib.utils.prompt_inputs import PromptState
+
 from .state_handlers import (
     Handler,
     PromptHandler,
@@ -5,7 +7,6 @@ from .state_handlers import (
     CommunicationHandler,
 )
 from .state_handlers import AskGeminiHandler, AskUserHandler, TerminalHandler
-from .prompt_inputs import PromptState
 from .gemini import GeminiAPIDao
 
 
