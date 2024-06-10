@@ -7,38 +7,17 @@ from persona_sync_pylib.utils.singleton import singleton
 from persona_sync_pylib.utils.environment import QUEUE_NAME, RABBIT_HOST, RABBIT_PORT
 from persona_sync_pylib.utils.prompt_inputs import QueueRequest, StateMachineQueueRequest
 from persona_sync_pylib.utils.logger import Logger, LogLevel
+from persona_sync_pylib.queue import Consumer
 
 from ..gemini import GeminiAPIDao
 from ..handler_factory import prompt_handler_factory
 
 
 @singleton
-class Consumer:
+class ChatAgentsConsumer(Consumer):
     def __init__(self, model: GeminiAPIDao) -> None:
-        self.__channel = self.__init_channel()
+        super().__init__()
         self.__model = model
-
-    def start_listening(self) -> None:
-        self.__channel.start_consuming()
-
-    def stop_listening(self) -> None:
-        self.__channel.stop_consuming()
-        self.__channel.close()
-
-    def __init_channel(self) -> BlockingChannel:
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=RABBIT_HOST, port=RABBIT_PORT)
-        )
-        channel = connection.channel()
-
-        channel.queue_declare(queue=QUEUE_NAME, durable=True)
-
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(
-            queue=QUEUE_NAME, on_message_callback=self.message_processor
-        )
-
-        return channel
 
     def message_processor(self, ch, method, _properties, body):
         body_decoded = json.loads(body.decode())

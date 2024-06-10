@@ -4,12 +4,12 @@ from typing import Optional
 
 
 from chat_agents_executor.gemini import GeminiAPIDao
-from chat_agents_executor.queue import Consumer
+from chat_agents_executor.queue import ChatAgentsConsumer
 
 
 def main(args: Namespace):
     model = GeminiAPIDao(api_key=args.gemini_api_key)
-    queue_listener = Consumer(model=model)
+    queue_listener = ChatAgentsConsumer(model=model)
 
     try:
         queue_listener.start_listening()
