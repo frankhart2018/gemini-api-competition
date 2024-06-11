@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 const PROJECT_URL = process.env.PROJECT_URL||"http://localhost:4000";
+const ADMIN_PASS = process.env.ADMIN_PASS;
+const ADMIN_EMAIL=process.env.ADMIN_EMAIL;
 const UsersController = (app) => {
     app.post("/api/login", findUser);
     app.post("/api/register", createUser);
@@ -97,13 +99,13 @@ const forgetPassword = async (req, res) => {
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "team27neu@gmail.com",
-        pass: "gvsvokpuxkhwsezu",
+        user: ADMIN_EMAIL,
+        pass: ADMIN_PASS,
       },
     });
   
     var mailOptions = {
-      from: "team27neu@gmail.com",
+      from: ADMIN_EMAIL,
       to: user.email,
       subject: "Password Reset",
       text: link,
