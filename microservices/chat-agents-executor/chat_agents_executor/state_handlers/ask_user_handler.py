@@ -1,5 +1,5 @@
 from typing import Union, Optional
-from persona_sync_pylib.queue import publish_message
+from persona_sync_pylib.queue import publish_chat_agents_message
 from persona_sync_pylib.utils.singleton import singleton
 from persona_sync_pylib.types.chat_agents import (
     QueueRequest,
@@ -9,7 +9,8 @@ from persona_sync_pylib.types.chat_agents import (
 from persona_sync_pylib.utils.logger import Logger, LogLevel
 
 from ..store.prompt_input_dao import PromptInputDao
-from ..gemini import GeminiAPIDao
+from ..utils.gemini import GeminiAPIDao
+from ..utils.environment import QUEUE_NAME
 from .handler import Handler
 
 
@@ -58,4 +59,4 @@ class AskUserHandler(Handler):
     ) -> None:
         transition_request = prompt_request.model_copy(deep=True)
         transition_request.state = PromptState.COMMUNICATE
-        publish_message(message=transition_request)
+        publish_chat_agents_message(message=transition_request, queue_name=QUEUE_NAME)

@@ -6,14 +6,15 @@ from persona_sync_pylib.types.chat_agents import QueueRequest, StateMachineQueue
 from persona_sync_pylib.utils.logger import Logger, LogLevel
 from persona_sync_pylib.queue import Consumer
 
-from ..gemini import GeminiAPIDao
-from ..handler_factory import prompt_handler_factory
+from ..utils.gemini import GeminiAPIDao
+from ..utils.environment import QUEUE_NAME
+from ..utils.handler_factory import prompt_handler_factory
 
 
 @singleton
 class ChatAgentsConsumer(Consumer):
     def __init__(self, model: GeminiAPIDao) -> None:
-        super().__init__()
+        super().__init__(queue_name=QUEUE_NAME)
         self.__model = model
 
     def message_processor(self, ch, method, _properties, body):

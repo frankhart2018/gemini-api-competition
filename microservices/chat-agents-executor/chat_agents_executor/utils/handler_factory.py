@@ -1,12 +1,12 @@
 from persona_sync_pylib.types.chat_agents import PromptState
 
-from .state_handlers import (
+from ..state_handlers import (
     Handler,
     PromptHandler,
     CommenceHandlder,
     CommunicationHandler,
 )
-from .state_handlers import AskGeminiHandler, AskUserHandler, TerminalHandler
+from ..state_handlers import AskGeminiHandler, AskUserHandler, TerminalHandler
 from .gemini import GeminiAPIDao
 
 

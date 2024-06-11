@@ -1,5 +1,5 @@
 from typing import Union, Optional
-from persona_sync_pylib.queue import publish_message
+from persona_sync_pylib.queue import publish_chat_agents_message
 from persona_sync_pylib.utils.singleton import singleton
 from persona_sync_pylib.types.chat_agents import (
     QueueRequest,
@@ -9,7 +9,8 @@ from persona_sync_pylib.types.chat_agents import (
 )
 from persona_sync_pylib.utils.logger import Logger, LogLevel
 
-from ..gemini import GeminiAPIDao
+from ..utils.gemini import GeminiAPIDao
+from ..utils.environment import QUEUE_NAME
 from .handler import Handler
 
 
@@ -62,9 +63,13 @@ generate that."""
             ]
             transition_request.previous_response = model_output
             transition_request.state = PromptState.ASK_GEMINI
-            publish_message(message=transition_request)
+            publish_chat_agents_message(
+                message=transition_request, queue_name=QUEUE_NAME
+            )
         else:
             transition_request.target = "u2"
             transition_request.previous_response = model_output
             transition_request.state = PromptState.COMMUNICATE
-            publish_message(message=transition_request)
+            publish_chat_agents_message(
+                message=transition_request, queue_name=QUEUE_NAME
+            )

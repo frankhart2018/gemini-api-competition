@@ -2,8 +2,9 @@ from typing import Any, Dict, List
 from bson.objectid import ObjectId
 from persona_sync_pylib.utils.singleton import singleton
 from persona_sync_pylib.utils.mongo_ops import MongoCollection
-from persona_sync_pylib.utils.environment import MONGO_DB_NAME, PROMPT_INPUTS_COLLECTION
 from persona_sync_pylib.types.chat_agents import QAndA
+
+from app.utils.environment import MONGO_DB_NAME, PROMPT_INPUTS_COLLECTION
 
 
 @singleton
