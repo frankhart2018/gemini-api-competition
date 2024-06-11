@@ -8,3 +8,11 @@ export const findUser = (email) => {
 export const createUser = (email, password, username) => {
     return userModel.create({ email, password, username });
     }
+
+export const findUserById = (id) => {
+  return userModel.findOne({ _id: id });
+};
+
+export const updatePassword = (id, password) => {
+    return userModel.updateOne({ _id: id }, { password: password });
+  };
