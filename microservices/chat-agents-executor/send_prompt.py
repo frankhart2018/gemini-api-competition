@@ -4,9 +4,10 @@ import argparse
 import pika
 from bson import ObjectId
 from persona_sync_pylib.types.chat_agents import QueueRequest, StateMachineQueueRequest
-from persona_sync_pylib.utils.environment import RABBIT_HOST, RABBIT_PORT, QUEUE_NAME
+from persona_sync_pylib.queue import publish_chat_agents_message
 
 from chat_agents_executor.store.prompt_input_dao import PromptInputDao
+from chat_agents_executor.utils.environment import QUEUE_NAME
 
 
 def main():
@@ -31,24 +32,7 @@ def main():
         res = PromptInputDao().upsert(prompt_input=message)
         message.interaction_id = str(res.upserted_id)
 
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=RABBIT_HOST, port=RABBIT_PORT)
-    )
-    channel = connection.channel()
-
-    channel.queue_declare(queue=QUEUE_NAME, durable=True)
-
-    try:
-        channel.basic_publish(
-            exchange="",
-            routing_key=QUEUE_NAME,
-            body=message.model_dump_json(),
-            properties=pika.BasicProperties(delivery_mode=pika.DeliveryMode.Persistent),
-        )
-    except Exception as e:
-        print(e)
-
-    connection.close()
+    publish_chat_agents_message(message=message, queue_name=QUEUE_NAME)
 
 
 if __name__ == "__main__":

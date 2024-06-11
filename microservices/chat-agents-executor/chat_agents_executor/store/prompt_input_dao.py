@@ -3,9 +3,10 @@ from pymongo.results import UpdateResult
 from bson.objectid import ObjectId
 import pydantic
 from persona_sync_pylib.utils.singleton import singleton
-from persona_sync_pylib.utils.environment import MONGO_DB_NAME, PROMPT_INPUTS_COLLECTION
 from persona_sync_pylib.utils.mongo_ops import MongoCollection
 from persona_sync_pylib.types.chat_agents import QueueRequest, StateMachineQueueRequest
+
+from ..utils.environment import MONGO_DB_NAME, PROMPT_INPUTS_COLLECTION
 
 
 @singleton

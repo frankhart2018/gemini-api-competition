@@ -7,7 +7,7 @@ from persona_sync_pylib.types.chat_agents import (
 from persona_sync_pylib.utils.logger import Logger, LogLevel
 
 from ..store.prompt_input_dao import PromptInputDao
-from ..gemini import GeminiAPIDao
+from ..utils.gemini import GeminiAPIDao
 from .handler import Handler
 
 
