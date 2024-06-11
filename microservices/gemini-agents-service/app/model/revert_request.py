@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-from persona_sync_pylib.utils.prompt_inputs import QAndA, StateMachineQueueRequest
+from persona_sync_pylib.types.chat_agents import QAndA, StateMachineQueueRequest
 
 
 class RevertChatHTTPRequest(BaseModel):

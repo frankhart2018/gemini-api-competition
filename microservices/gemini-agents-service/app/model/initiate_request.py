@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from persona_sync_pylib.utils.prompt_inputs import StateMachineQueueRequest
+from persona_sync_pylib.types.chat_agents import StateMachineQueueRequest
 
 from app.model.prompt_request import PromptRabbitRequest
 

@@ -1,4 +1,4 @@
-from persona_sync_pylib.utils.prompt_inputs import PromptState
+from persona_sync_pylib.types.chat_agents import PromptState
 
 from .state_handlers import (
     Handler,

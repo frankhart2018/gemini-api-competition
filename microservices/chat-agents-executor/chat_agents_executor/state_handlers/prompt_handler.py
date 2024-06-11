@@ -1,6 +1,6 @@
 from typing import Union, Optional
 from persona_sync_pylib.utils.singleton import singleton
-from persona_sync_pylib.utils.prompt_inputs import QueueRequest, StateMachineQueueRequest
+from persona_sync_pylib.types.chat_agents import QueueRequest, StateMachineQueueRequest
 
 from ..gemini import GeminiAPIDao
 from .handler import Handler
