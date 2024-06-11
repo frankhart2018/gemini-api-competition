@@ -1,14 +1,19 @@
 import * as userDao from "./user-dao.js";
 import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
-// import nodemailer from "nodemailer";
+import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
+const PROJECT_URL = process.env.PROJECT_URL||"http://localhost:4000";
+const ADMIN_PASS = process.env.ADMIN_PASS;
+const ADMIN_EMAIL=process.env.ADMIN_EMAIL;
 const UsersController = (app) => {
     app.post("/api/login", findUser);
     app.post("/api/register", createUser);
     app.post("/api/logout", logoutUser);
+    app.post("/api/forget-password", forgetPassword);
+    app.post("/api/update-password/:id/:token", updatePassword);
 }
 
 const findUser = async (req, res) => {
@@ -80,4 +85,63 @@ const logoutUser = async (req, res) => {
     }
 }
 
+const forgetPassword = async (req, res) => {
+    const { email } = req.body;
+    const user = await userDao.findUser(email);
+    if (!user) {
+      return res.json({ status: "404", message: "User Not found" });
+    }
+    const secret = JWT_SECRET + user.password;
+    const token = Jwt.sign({ email: user.email, id: user._id }, secret, {
+      expiresIn: "5m",
+    });
+    const link = `${PROJECT_URL}/api/update-password/${user._id}/${token}`;
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: ADMIN_EMAIL,
+        pass: ADMIN_PASS,
+      },
+    });
+  
+    var mailOptions = {
+      from: ADMIN_EMAIL,
+      to: user.email,
+      subject: "Password Reset",
+      text: link,
+    };
+  
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+    res.status(201).json({ status: "ok", message: "Email sent" });
+  };
+
+
+
+
+const updatePassword = async (req, res) => {
+    const { id, token } = req.params;
+    const { password } = req.body;
+    const oldUser = await userDao.findUserById({ _id: id });
+    if (!oldUser) {
+      return res.json({ status: 400, message: "User Not Exists!!" });
+    }
+    const secret = JWT_SECRET + oldUser.password;
+    try {
+      Jwt.verify(token, secret);
+      const encryptedPassword = await bcrypt.hash(password, 10);
+      await userDao.updatePassword(id, encryptedPassword);
+      return res.status(201).json({
+        status: 201,
+        message: "Password Updated Successfully",
+      });
+    } catch (error) {
+      return res.status(400).json({ status: 400, message: "Invalid Token" });
+    }
+  };
+  
 export default UsersController;
