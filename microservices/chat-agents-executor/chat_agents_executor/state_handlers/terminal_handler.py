@@ -1,9 +1,12 @@
 from typing import Union, Optional
 from persona_sync_pylib.utils.singleton import singleton
-from persona_sync_pylib.utils.prompt_inputs import QueueRequest, StateMachineQueueRequest, PromptState, QAndA
+from persona_sync_pylib.types.chat_agents import (
+    QueueRequest,
+    StateMachineQueueRequest,
+)
 from persona_sync_pylib.utils.logger import Logger, LogLevel
-from persona_sync_pylib.utils.mongo_ops import PromptInputDao
 
+from ..store.prompt_input_dao import PromptInputDao
 from ..gemini import GeminiAPIDao
 from .handler import Handler
 

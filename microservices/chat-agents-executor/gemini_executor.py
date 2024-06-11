@@ -1,7 +1,5 @@
 import argparse
 from argparse import Namespace
-from typing import Optional
-
 
 from chat_agents_executor.gemini import GeminiAPIDao
 from chat_agents_executor.queue import ChatAgentsConsumer

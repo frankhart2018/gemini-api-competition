@@ -3,10 +3,10 @@
 import argparse
 import pika
 from bson import ObjectId
-
-from persona_sync_pylib.utils.mongo_ops import PromptInputDao
-from persona_sync_pylib.utils.prompt_inputs import QueueRequest, StateMachineQueueRequest
+from persona_sync_pylib.types.chat_agents import QueueRequest, StateMachineQueueRequest
 from persona_sync_pylib.utils.environment import RABBIT_HOST, RABBIT_PORT, QUEUE_NAME
+
+from chat_agents_executor.store.prompt_input_dao import PromptInputDao
 
 
 def main():

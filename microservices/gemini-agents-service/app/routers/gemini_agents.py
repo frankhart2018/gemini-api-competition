@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from persona_sync_pylib.queue import publish_message
-from persona_sync_pylib.utils.mongo_ops import PromptInputDao
 
+from app.store.prompt_input_dao import PromptInputDao
 from app.model.prompt_request import PromptHTTPRequest, PromptRabbitRequest
 from app.model.initiate_request import (
     InitiateChatHTTPRequest,

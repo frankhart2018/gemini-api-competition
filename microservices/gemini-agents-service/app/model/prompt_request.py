@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from persona_sync_pylib.utils.prompt_inputs import QueueRequest
+from persona_sync_pylib.types.chat_agents import QueueRequest
 
 
 class PromptHTTPRequest(BaseModel):
