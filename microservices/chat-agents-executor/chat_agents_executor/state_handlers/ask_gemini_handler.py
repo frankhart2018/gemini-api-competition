@@ -65,11 +65,13 @@ Do not make up additional questions. The number of <ASK> and <ANS> tags should b
 
         answered_q_and_a_s = []
         unanswered_q_and_a_s = []
-        for question, answer in zip(questions, answers):
+        for i, (question, answer) in enumerate(zip(questions, answers)):
             if answer.strip() == "<ANS></ANS>":
-                unanswered_q_and_a_s.append(QAndA(question=question))
+                unanswered_q_and_a_s.append(QAndA(question=question, obj_id=str(i)))
             else:
-                answered_q_and_a_s.append(QAndA(question=question, answer=answer))
+                answered_q_and_a_s.append(
+                    QAndA(question=question, answer=answer, obj_id=str(i))
+                )
 
         transition_request = prompt_request.model_copy(deep=True)
 
