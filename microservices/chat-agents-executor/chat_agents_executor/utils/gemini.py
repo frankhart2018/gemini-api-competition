@@ -1,5 +1,7 @@
 import google.generativeai as genai
 from typing import Optional, List
+import numpy as np
+from numpy.linalg import norm
 from persona_sync_pylib.utils.singleton import singleton
 from persona_sync_pylib.utils.logger import Logger, LogLevel
 
@@ -33,3 +35,10 @@ class GeminiAPIDao:
         except Exception as e:
             Logger().log(LogLevel.ERROR, f"Failed to generate embeddings: {e}")
             return []
+
+    def get_similarity_score(
+        self, embedding_1: List[float], embedding_2: List[float]
+    ) -> float:
+        return np.dot(embedding_1, embedding_2) / (
+            norm(embedding_1) * norm(embedding_2)
+        )
