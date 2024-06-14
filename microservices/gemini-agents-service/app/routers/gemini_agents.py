@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
+from bson import ObjectId
+import time
 from persona_sync_pylib.queue import publish_chat_agents_message
 
 from app.store.prompt_input_dao import PromptInputDao
@@ -17,14 +19,25 @@ router = APIRouter()
 
 @router.post("/prompt", tags=["gemini-agents"])
 async def prompt(prompt_http_request: PromptHTTPRequest):
+    interaction_id = str(ObjectId())
     rabbit_request = PromptRabbitRequest(
-        input=prompt_http_request.prompt, state="PROMPT"
+        input=prompt_http_request.prompt, state="PROMPT", interaction_id=interaction_id
     )
     publish_status = publish_chat_agents_message(
         message=rabbit_request, queue_name=QUEUE_NAME
     )
 
-    return {"status": publish_status}
+    result_dict = {"status": publish_status, "interaction_id": interaction_id}
+    if prompt_http_request.poll:
+        while True:
+            result = PromptInputDao().get_prompt_input(prompt_id=interaction_id)
+            if result is not None:
+                result_dict["output"] = result.previous_response
+                break
+
+            time.sleep(2)
+
+    return result_dict
 
 
 @router.post("/chat/initiate", tags=["gemini-agents"])

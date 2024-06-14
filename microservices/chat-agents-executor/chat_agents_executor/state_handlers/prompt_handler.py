@@ -3,6 +3,7 @@ from persona_sync_pylib.utils.singleton import singleton
 from persona_sync_pylib.types.chat_agents import QueueRequest, StateMachineQueueRequest
 
 from ..utils.gemini import GeminiAPIDao
+from ..store.prompt_input_dao import PromptInputDao
 from .handler import Handler
 
 
@@ -15,8 +16,12 @@ class PromptHandler(Handler):
         self, prompt_request: Union[QueueRequest, StateMachineQueueRequest]
     ) -> Optional[str]:
         model_response = self.__model.prompt(message=prompt_request.input)
-        print(f"You: {prompt_request.input}")
-        print(f"Gemini: {model_response}")  # Replace this with mongo insert call
+
+        print(f"PROMPT: {model_response}")
+
+        result = prompt_request.model_copy(deep=True)
+        result.previous_response = model_response
+        PromptInputDao().upsert(prompt_input=result, prompt_id=result.interaction_id)
 
         return None
 
