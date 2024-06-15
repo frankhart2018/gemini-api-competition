@@ -6,7 +6,12 @@ from ..state_handlers import (
     CommenceHandlder,
     CommunicationHandler,
 )
-from ..state_handlers import AskGeminiHandler, AskUserHandler, TerminalHandler
+from ..state_handlers import (
+    AskGeminiHandler,
+    AskUserHandler,
+    TerminalHandler,
+    EmbedHandler,
+)
 from .gemini import GeminiAPIDao
 
 
@@ -18,6 +23,7 @@ def prompt_handler_factory(state: PromptState, model: GeminiAPIDao) -> Handler:
         "ASK_GEMINI": AskGeminiHandler,
         "ASK_USER": AskUserHandler,
         "TERMINAL": TerminalHandler,
+        "EMBED": EmbedHandler,
     }
 
     return handler[state](model=model)
