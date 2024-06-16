@@ -1,5 +1,5 @@
 from typing import Union, Optional
-from persona_sync_pylib.queue import publish_chat_agents_message
+from persona_sync_pylib.queue import publish_message
 from persona_sync_pylib.utils.singleton import singleton
 from persona_sync_pylib.types.chat_agents import (
     QueueRequest,
@@ -80,12 +80,8 @@ Do not make up additional questions. The number of <ASK> and <ANS> tags should b
             transition_request.q_and_a_s = questions
 
             transition_request.state = PromptState.ASK_USER
-            publish_chat_agents_message(
-                message=transition_request, queue_name=QUEUE_NAME
-            )
+            publish_message(message=transition_request, queue_name=QUEUE_NAME)
         else:
             transition_request.q_and_a_s = answered_q_and_a_s
             transition_request.state = PromptState.COMMUNICATE
-            publish_chat_agents_message(
-                message=transition_request, queue_name=QUEUE_NAME
-            )
+            publish_message(message=transition_request, queue_name=QUEUE_NAME)
