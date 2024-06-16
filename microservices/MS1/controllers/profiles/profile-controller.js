@@ -1,5 +1,5 @@
 import * as profileDao from "./profile-dao.js";
-
+import {logger, LogLevel} from "../../utils/logging.js";
 const ProfileController = (app) => {
     app.post("/api/profile", createUpdateProfile);
     app.get("/api/profile/:userId", getProfile);
@@ -25,6 +25,7 @@ const createUpdateProfile = async (req, res) => {
         await profileDao.updateProfile(userId, bio, age, location, interests);
         res.send({ message: "Profile updated successfully" });
     } catch (err) {
+        logger.log(LogLevel.ERROR, err);
         res.status(500).send({ message: "An error occurred" });
     }
 }
