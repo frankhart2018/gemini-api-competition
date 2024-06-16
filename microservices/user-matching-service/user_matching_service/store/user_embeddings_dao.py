@@ -21,8 +21,8 @@ class UserEmbeddingsDao:
             "user_summary_embedding": np.array(user_entry.user_summary_embedding),
         }
 
-    def insert(self, user_entry: UserEntry) -> None:
-        self.__client.insert(
+    def upsert(self, user_entry: UserEntry) -> None:
+        self.__client.upsert(
             collection_name=USER_MATCHING_COLLECTION,
             data=[self.__get_embedding_as_array(user_entry)],
         )

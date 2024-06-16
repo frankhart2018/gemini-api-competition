@@ -21,7 +21,7 @@ class UserMatchingConsumer(Consumer):
         super().__init__(queue_name=QUEUE_NAME)
 
     def __handle_index_state(self, user_entry: UserEntryQueueRequest) -> None:
-        UserEmbeddingsDao().insert(
+        UserEmbeddingsDao().upsert(
             user_entry=UserEntry(
                 user_id=user_entry.user_id,
                 user_summary_embedding=user_entry.user_summary_embedding,
