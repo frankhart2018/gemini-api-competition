@@ -10,8 +10,9 @@ from persona_sync_pylib.types.user_matching import (
 from persona_sync_pylib.utils.logger import Logger, LogLevel
 from persona_sync_pylib.utils.singleton import singleton
 
-from ..utils.environment import QUEUE_NAME
+from ..utils.environment import QUEUE_NAME, BLOOMD_FILTER_NAME
 from ..store.user_embeddings_dao import UserEmbeddingsDao
+from ..store.match_filter_dao import MatchFilterDAO
 
 
 @singleton
@@ -38,6 +39,12 @@ class UserMatchingConsumer(Consumer):
                 user_summary_embedding=user_entry.user_summary_embedding,
             )
         )
+
+        self_user_id = user_entry.user_id
+        filter = MatchFilterDAO().get_filter()
+        for match in matches:
+            user_id = match.user_id
+            filter.set(filter_name=BLOOMD_FILTER_NAME, key=f"{self_user_id}-{user_id}")
 
     def message_processor(self, ch, method, _properties, body):
         body_decoded = json.loads(body.decode())
