@@ -5,30 +5,30 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarNav } from "./(components)/sidebar-nav"
 
 export const metadata: Metadata = {
-  title: "userprofile",
+  title: "user settings",
   description: "Advanced form example using react-hook-form and Zod.",
 }
 
 const sidebarNavItems = [
   {
     title: "Profile",
-    href: "/userprofile",
+    href: "/settings",
   },
   {
     title: "Account",
-    href: "/userprofile/account",
+    href: "/settings/account",
   },
   {
     title: "Appearance",
-    href: "/userprofile/appearance",
+    href: "/settings/appearance",
   },
   {
     title: "Notifications",
-    href: "/userprofile/notifications",
+    href: "/settings/notifications",
   },
   {
     title: "Display",
-    href: "/userprofile/display",
+    href: "/settings/display",
   },
 ]
 
