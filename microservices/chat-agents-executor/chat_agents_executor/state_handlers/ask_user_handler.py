@@ -1,6 +1,5 @@
 from typing import Union, Optional, List
 from dataclasses import dataclass
-from persona_sync_pylib.queue import publish_chat_agents_message
 from persona_sync_pylib.utils.singleton import singleton
 from persona_sync_pylib.types.chat_agents import (
     QueueRequest,

@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from bson import ObjectId
 import time
-from persona_sync_pylib.queue import publish_chat_agents_message
+from persona_sync_pylib.queue import publish_message
 
 from app.store.prompt_input_dao import PromptInputDao
 from app.model.prompt_request import PromptHTTPRequest, PromptRabbitRequest
@@ -23,9 +23,7 @@ async def prompt(prompt_http_request: PromptHTTPRequest):
     rabbit_request = PromptRabbitRequest(
         input=prompt_http_request.prompt, state="PROMPT", interaction_id=interaction_id
     )
-    publish_status = publish_chat_agents_message(
-        message=rabbit_request, queue_name=QUEUE_NAME
-    )
+    publish_status = publish_message(message=rabbit_request, queue_name=QUEUE_NAME)
 
     result_dict = {"status": publish_status, "interaction_id": interaction_id}
     if prompt_http_request.poll:
@@ -51,9 +49,7 @@ async def chat(initiate_chat_http_request: InitiateChatHTTPRequest):
         u2_summary=initiate_chat_http_request.u2_summary,
         target="u1",
     )
-    publish_status = publish_chat_agents_message(
-        message=rabbit_request, queue_name=QUEUE_NAME
-    )
+    publish_status = publish_message(message=rabbit_request, queue_name=QUEUE_NAME)
 
     return {"status": publish_status}
 
@@ -74,9 +70,7 @@ async def chat_revert(
 
     try:
         rabbit_request = RevertChatRabbitRequest(**result)
-        publish_status = publish_chat_agents_message(
-            message=rabbit_request, queue_name=QUEUE_NAME
-        )
+        publish_status = publish_message(message=rabbit_request, queue_name=QUEUE_NAME)
 
         return {"status": publish_status}
     except Exception as e:

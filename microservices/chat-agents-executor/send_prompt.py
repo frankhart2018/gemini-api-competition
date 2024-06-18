@@ -4,7 +4,7 @@ import argparse
 import pika
 from bson import ObjectId
 from persona_sync_pylib.types.chat_agents import QueueRequest, StateMachineQueueRequest
-from persona_sync_pylib.queue import publish_chat_agents_message
+from persona_sync_pylib.queue import publish_message
 
 from chat_agents_executor.store.prompt_input_dao import PromptInputDao
 from chat_agents_executor.utils.environment import QUEUE_NAME
@@ -32,7 +32,7 @@ def main():
         res = PromptInputDao().upsert(prompt_input=message)
         message.interaction_id = str(res.upserted_id)
 
-    publish_chat_agents_message(message=message, queue_name=QUEUE_NAME)
+    publish_message(message=message, queue_name=QUEUE_NAME)
 
 
 if __name__ == "__main__":
