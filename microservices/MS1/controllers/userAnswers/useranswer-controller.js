@@ -1,5 +1,5 @@
 import * as userAnswerDao from "./useranswer-dao.js";
-
+import {logger, LogLevel} from "../../utils/logging.js";
 
 const UserAnswerController = (app) => {
     app.post("/api/questions/answers", createUpdateUserAnswer);
@@ -23,6 +23,7 @@ const createUpdateUserAnswer = async (req, res) => {
         await userAnswerDao.createOrUpdateUserAnswer(userId, questionAnsObj);
         res.send({ message: "User info added successfully" });
     } catch (err) {
+        logger.log(LogLevel.ERROR, err);
         res.status(500).send({ message: "An error occurred" });
     }
 }

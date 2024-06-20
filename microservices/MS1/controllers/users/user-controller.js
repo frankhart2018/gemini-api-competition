@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import Jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
+import {logger, LogLevel} from "../../utils/logging.js";
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 const PROJECT_URL = process.env.PROJECT_URL||"http://localhost:4000";
@@ -33,6 +34,7 @@ const findUser = async (req, res) => {
         const token = Jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
         res.send({ userId:user._id, token });
     } catch (err) {
+        logger.log(LogLevel.ERROR, err);
         res.status(500).send({ message: "An error occurred" });
     }
 }
@@ -66,7 +68,8 @@ const createUser = async (req, res) => {
             data: token,
             userId:user._id
         });
-    } catch (error) {
+    } catch (err) {
+        logger.log(LogLevel.ERROR, err);
         res.status(500).json({ message: "An error occurred" });
     }
 };
@@ -81,6 +84,7 @@ const logoutUser = async (req, res) => {
         }
         res.send({ message: "User logged out" });
     } catch (err) {
+        logger.log(LogLevel.ERROR, err);
         res.status(500).send({ message: "An error occurred" });
     }
 }
@@ -139,7 +143,8 @@ const updatePassword = async (req, res) => {
         status: 201,
         message: "Password Updated Successfully",
       });
-    } catch (error) {
+    } catch (err) {
+      logger.log(LogLevel.ERROR, err);
       return res.status(400).json({ status: 400, message: "Invalid Token" });
     }
   };

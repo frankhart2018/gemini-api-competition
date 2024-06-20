@@ -1,7 +1,7 @@
 
 const questions = [
     {question_text:"Tell me something interesting about yourself that you'd like others to know.", category:"Required"},
-    { question_text: "What is your full name?", category: "Personal Background" },
+    { question_text: "What is your favorite season and why?", category: "Personal Background" },
     { question_text: "Where are you from originally?", category: "Personal Background" },
     { question_text: "Do you have any siblings? If so, how many?", category: "Personal Background" },
     { question_text: "What's your favorite childhood memory?", category: "Personal Background" },

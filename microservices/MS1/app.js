@@ -6,6 +6,7 @@ import UsersController from './controllers/users/user-controller.js';
 import ProfileController from "./controllers/profiles/profile-controller.js";
 import QuestionController from "./controllers/questions/question-controller.js";
 import UserAnswerController from "./controllers/userAnswers/useranswer-controller.js";
+import NotificationController from "./controllers/notifications/notification-controller.js";
 // Load config
 dotenv.config();
 
@@ -26,4 +27,5 @@ UsersController(app);
 ProfileController(app);
 QuestionController(app);
 UserAnswerController(app);
+NotificationController(app);
 app.listen(process.env.PORT || 4000);
