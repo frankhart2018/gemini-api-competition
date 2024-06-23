@@ -42,6 +42,7 @@ const getProfile = async (req, res) => {
         }
         res.send(profile);
     } catch (err) {
+        logger.log(LogLevel.ERROR, err);
         res.status(500).send({ message: "An error occurred" });
     }
 }
@@ -70,6 +71,7 @@ const sendFriendRequest = async (req, res) => {
             await profileDao.sendRequest(userId, friendId);
             res.status(201).json({ message: 'Friend request sent successfully' });
     } catch (err) {
+        logger.log(LogLevel.ERROR, err);
         res.status(500).send({ message: "An error occurred" });
     }
 }
@@ -99,6 +101,7 @@ const respondToFriendRequest = async (req, res) => {
        
         res.status(201).json({ message: 'Friend request responded successfully' });
     } catch (err) {
+        logger.log(LogLevel.ERROR, err);
         res.status(500).send({ message: "An error occurred" });
     }
 }
@@ -115,6 +118,7 @@ const getFriends = async (req, res) => {
         }
         res.send(profile.friends);
     } catch (err) {
+        logger.log(LogLevel.ERROR, err);
         res.status(500).send({ message: "An error occurred" });
     }
 }
