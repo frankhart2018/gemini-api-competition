@@ -2,7 +2,6 @@
 version: '3'
 services:
   chat-agents:
-    container_name: chat-agents-service
     build:
       context: ./microservices/chat-agents-executor
       args:
