@@ -38,6 +38,19 @@ async def prompt(prompt_http_request: PromptHTTPRequest):
     return result_dict
 
 
+@router.get("/prompt/{interaction_id}", tags=["gemini-agents"])
+async def get_prompt(interaction_id: str):
+    result = PromptInputDao().get_prompt_input(prompt_id=interaction_id)
+    if result is None:
+        return HTTPException(
+            status_code=404, detail="Interaction ID not found in the database"
+        )
+
+    return {
+        "output": result.previous_response,
+    }
+
+
 @router.post("/chat/initiate", tags=["gemini-agents"])
 async def chat(initiate_chat_http_request: InitiateChatHTTPRequest):
     rabbit_request = InitiateChatRabbitRequest(
