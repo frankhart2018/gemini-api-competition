@@ -1,0 +1,52 @@
+# Add this docker file as chat-agents
+version: '3'
+services:
+  chat-agents:
+    build:
+      context: ./microservices/chat-agents-executor
+      args:
+        - LOGGER_URL=${LOGGER_URL:?Logger URL is required}
+        - LOGGER_TOKEN=${LOGGER_TOKEN:?Logger Token is required}
+        - GEMINI_API_KEY=${GEMINI_API_KEY:?Gemini API Key is required}
+    depends_on:
+      - mongodb
+      - rabbitmq
+    environment:
+      - LOGGER_URL=${LOGGER_URL}
+      - LOGGER_TOKEN=${LOGGER_TOKEN}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - MONGO_HOST=mongodb://mongodb:27017/chat-agents
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+
+  queue-api-gateway:
+    container_name: queue-api-gateway
+    build:
+      context: ./microservices/queue-api-gateway
+      args:
+        - LOGGER_URL=${LOGGER_URL:?Logger URL is required}
+        - LOGGER_TOKEN=${LOGGER_TOKEN:?Logger Token is required}
+    depends_on:
+      - mongodb
+      - rabbitmq
+    ports:
+      - "8000:8000"
+    environment:
+      - LOGGER_URL=${LOGGER_URL}
+      - LOGGER_TOKEN=${LOGGER_TOKEN}
+      - MONGO_HOST=mongodb://mongodb:27017/chat-agents
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+
+  rabbitmq:
+    container_name: chat-agents-queue
+    image: rabbitmq:3.13-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  mongodb:
+    container_name: mongo-store
+    image: mongo:bionic
+    ports:
+      - "27017:27017"
