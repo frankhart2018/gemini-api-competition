@@ -7,9 +7,13 @@ const UserAnswerSchema = mongoose.Schema({
     required: true
   },
   questionAnsObj: [{
-    question_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Question',
+    // question_: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: 'Question',
+    //   required: true
+    // },
+    questionText:{
+      type: String,
       required: true
     },
     answer: {
@@ -17,6 +21,9 @@ const UserAnswerSchema = mongoose.Schema({
       required: true
     }
   }],
+  userSummary:{
+    type: String,
+  },
   created_at: {
     type: Date,
     default: Date.now
