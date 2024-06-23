@@ -1,7 +1,14 @@
 import pika
 from pika.adapters.blocking_connection import BlockingChannel
+import pika.exceptions
 
-from persona_sync_pylib.utils.environment import RABBIT_HOST, RABBIT_PORT
+from persona_sync_pylib.utils.environment import (
+    RABBIT_HOST,
+    RABBIT_PORT,
+    RABBIT_CONNECTION_ATTEMPTS,
+    RABBIT_CONNECTION_DELAY,
+)
+from persona_sync_pylib.utils.logger import Logger, LogLevel
 
 
 class Consumer:
@@ -16,9 +23,22 @@ class Consumer:
         self.__channel.close()
 
     def __init_channel(self, queue_name: str) -> BlockingChannel:
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=RABBIT_HOST, port=RABBIT_PORT)
-        )
+        try:
+            connection = pika.BlockingConnection(
+                pika.ConnectionParameters(
+                    host=RABBIT_HOST,
+                    port=RABBIT_PORT,
+                    connection_attempts=RABBIT_CONNECTION_ATTEMPTS,
+                    retry_delay=RABBIT_CONNECTION_DELAY,
+                )
+            )
+        except pika.exceptions.AMQPConnectionError as e:
+            Logger.log(
+                LogLevel.ERROR,
+                f"Failed to connect to RabbitMQ: {e}",
+            )
+            raise Exception(f"Failed to connect to RabbitMQ: {e}")
+
         channel = connection.channel()
 
         channel.queue_declare(queue=queue_name, durable=True)
