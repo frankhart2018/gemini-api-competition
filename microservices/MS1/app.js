@@ -28,4 +28,4 @@ ProfileController(app);
 QuestionController(app);
 UserAnswerController(app);
 NotificationController(app);
-app.listen(process.env.PORT || 4000);
+app.listen(process.env.PORT || 4000, process.env.HOST || "127.0.0.1");

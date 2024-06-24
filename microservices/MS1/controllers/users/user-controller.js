@@ -6,9 +6,13 @@ import dotenv from 'dotenv';
 import {logger, LogLevel} from "../../utils/logging.js";
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
-const PROJECT_URL = process.env.PROJECT_URL||"http://localhost:4000";
 const ADMIN_PASS = process.env.ADMIN_PASS;
 const ADMIN_EMAIL=process.env.ADMIN_EMAIL;
+
+const HOST = process.env.HOST || "127.0.0.1";
+const PORT = process.env.PORT || 4000;
+const PROJECT_URL = `http://${HOST}:${PORT}`;
+
 const UsersController = (app) => {
     app.post("/api/login", findUser);
     app.post("/api/register", createUser);
