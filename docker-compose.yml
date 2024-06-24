@@ -19,6 +19,32 @@ services:
       - RABBIT_HOST=rabbitmq
       - RABBIT_PORT=5672
 
+  user-facing-api:
+    container_name: user-facing-api
+    build:
+      context: ./microservices/MS1
+      args:
+        - USER_API_HOST=${USER_API_HOST}
+        - JWT_SECRET=${JWT_SECRET:?JWT Secret is required}
+        - ADMIN_PASS=${ADMIN_PASS:?Admin Password is required}
+        - ADMIN_EMAIL=${ADMIN_EMAIL:?Admin Email is required}
+        - LOGGER_URL=${LOGGER_URL:?Logger URL is required}
+        - LOGGER_TOKEN=${LOGGER_TOKEN:?Logger Token is required}
+    depends_on:
+      - mongodb
+      - queue-api-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - HOST=${USER_API_HOST:-localhost}
+      - DB_CONNECTION_STRING=mongodb://mongodb:27017/MS1
+      - PROMPT_URL=http://queue-api-gateway:8000
+      - JWT_SECRET=${JWT_SECRET}
+      - ADMIN_PASS=${ADMIN_PASS}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - LOGGER_URL=${LOGGER_URL}
+      - LOGGER_TOKEN=${LOGGER_TOKEN}
+
   queue-api-gateway:
     container_name: queue-api-gateway
     build:
@@ -29,6 +55,7 @@ services:
     depends_on:
       - mongodb
       - rabbitmq
+      - chat-agents
     ports:
       - "8000:8000"
     environment:
