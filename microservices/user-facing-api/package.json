@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "MS1",
+  "name": "user-facing-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
