@@ -1,4 +1,5 @@
 import * as userAnswerDao from "./useranswer-dao.js";
+import * as userDao from "../users/user-dao.js";
 import {logger, LogLevel} from "../../utils/logging.js";
 import dotenv from 'dotenv';
 const UserAnswerController = (app) => {
@@ -17,7 +18,7 @@ const createUpdateUserAnswer = async (req, res) => {
             return res.status(400).send({ message: "questionAnsObj must be an array of objects with questionText and answer properties" });
         }
         //insert user_id or update if already exists
-        const userPresent = await userAnswerDao.findUser(userId);
+        const userPresent = await userDao.findUserById(userId);
         if(!userPresent){
            // user not present return 404
            return res.status(404).send({ message: "User not found" });
@@ -38,7 +39,7 @@ const getUserAnswers = async (req, res) => {
         if (!userId) {
             return res.status(400).send({ message: "User ID is required" });
         }
-        const user = await userAnswerDao.findUser(userId);
+        const user = await userDao.findUserById(userId);
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }

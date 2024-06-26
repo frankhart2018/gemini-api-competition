@@ -63,7 +63,7 @@ const createUser = async (req, res) => {
         }
 
         const encryptedPassword = await bcrypt.hash(password, 10);
-        await userDao.createUser(email, encryptedPassword, username);
+        const user = await userDao.createUser(email, encryptedPassword, username);
 
         const token = Jwt.sign({ email: email }, JWT_SECRET, { expiresIn: 86400 });
         res.status(201).json({

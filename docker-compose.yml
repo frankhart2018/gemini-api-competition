@@ -22,7 +22,7 @@ services:
   user-facing-api:
     container_name: user-facing-api
     build:
-      context: ./microservices/MS1
+      context: ./microservices/user-facing-api
       args:
         - USER_API_HOST=${USER_API_HOST}
         - JWT_SECRET=${JWT_SECRET:?JWT Secret is required}
@@ -37,7 +37,7 @@ services:
       - "4000:4000"
     environment:
       - HOST=${USER_API_HOST:-localhost}
-      - DB_CONNECTION_STRING=mongodb://mongodb:27017/MS1
+      - DB_CONNECTION_STRING=mongodb://mongodb:27017/user-facing-api
       - PROMPT_URL=http://queue-api-gateway:8000
       - JWT_SECRET=${JWT_SECRET}
       - ADMIN_PASS=${ADMIN_PASS}

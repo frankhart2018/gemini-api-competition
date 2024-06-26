@@ -4,6 +4,9 @@ export const findUser = (email) => {
   return userModel.findOne({ email: email });
 };
 
+export const findUserByUsername = (username) => {
+  return userModel.findOne({ username });
+};
 
 export const createUser = (email, password, username) => {
     return userModel.create({ email, password, username });
