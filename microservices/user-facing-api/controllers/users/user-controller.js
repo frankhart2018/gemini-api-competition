@@ -86,6 +86,10 @@ const logoutUser = async (req, res) => {
         if (!email) {
             return res.status(400).send({ message: "Email is required" });
         }
+        const user = await userDao.findUser(email);
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        } 
         res.send({ message: "User logged out" });
     } catch (err) {
         logger.log(LogLevel.ERROR, err);
