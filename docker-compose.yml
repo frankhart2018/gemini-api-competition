@@ -115,7 +115,7 @@ services:
       - COMMON_STORAGETYPE=local
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/infra-setup/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
     ports:
       - "19530:19530"
       - "9091:9091"
