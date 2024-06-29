@@ -33,16 +33,54 @@ class UserMatchingConsumer(Consumer):
         publish_message(message=forward_request, queue_name=QUEUE_NAME)
 
     def __handle_match_state(self, user_entry: UserEntryQueueRequest) -> None:
-        matches = UserEmbeddingsDao().search(
+        filter = MatchFilterDAO().get_filter()
+        self_user_id = user_entry.user_id
+
+        # Step 1: Initial search
+        no_filter_matches = UserEmbeddingsDao().search(
             user_entry=UserEntry(
-                user_id=user_entry.user_id,
+                user_id=self_user_id,
                 user_summary_embedding=user_entry.user_summary_embedding,
             )
         )
 
-        self_user_id = user_entry.user_id
-        filter = MatchFilterDAO().get_filter()
-        for match in matches:
+        # Step 2: Filter out already matched users
+        target_matches = len(no_filter_matches)
+        current_matches = target_matches
+        matches = {match.user_id: match for match in no_filter_matches}
+        for match in no_filter_matches:
+            res = filter.check(
+                filter_name=BLOOMD_FILTER_NAME,
+                key=f"{self_user_id}-{match.user_id}",
+            )
+            if res.status == "YES":
+                del matches[match.user_id]
+                current_matches -= 1
+
+        # Step 3: Find until required number of matches are found
+        while current_matches != target_matches:
+            filtered_matches = UserEmbeddingsDao().search(
+                user_entry=UserEntry(
+                    user_id=self_user_id,
+                    user_summary_embedding=user_entry.user_summary_embedding,
+                ),
+                count=target_matches - current_matches,
+                filter=[
+                    f"{self_user_id}-{match.user_id}" for match in matches.values()
+                ],
+            )
+
+            for match in filtered_matches:
+                res = filter.check(
+                    filter_name=BLOOMD_FILTER_NAME,
+                    key=f"{user_entry.user_id}-{match.user_id}",
+                )
+
+                if res.status == "NO":
+                    matches[match.user_id] = match
+                    current_matches += 1
+
+        for match in matches.values():
             user_id = match.user_id
             filter.set(filter_name=BLOOMD_FILTER_NAME, key=f"{self_user_id}-{user_id}")
 

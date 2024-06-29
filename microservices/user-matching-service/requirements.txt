@@ -1,0 +1,5 @@
+numpy>=1.21.2
+ploomy==0.1
+pydantic==2.7.1
+requests==2.26.0
+git+https://github.com/frankhart2018/gemini-api-competition#egg=persona_sync_pylib&subdirectory=pylib

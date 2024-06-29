@@ -1,6 +1,8 @@
 # Add this docker file as chat-agents
 version: '3'
 services:
+  # Backend Services
+
   chat-agents:
     build:
       context: ./microservices/chat-agents-executor
@@ -65,6 +67,25 @@ services:
       - RABBIT_HOST=rabbitmq
       - RABBIT_PORT=5672
 
+  user-matching-service:
+    build:
+      context: ./microservices/user-matching-service
+      args:
+        - LOGGER_URL=${LOGGER_URL:?Logger URL is required}
+        - LOGGER_TOKEN=${LOGGER_TOKEN:?Logger Token is required}
+    depends_on:
+      - rabbitmq
+      - bloomd
+      - milvus
+    environment:
+      - LOGGER_URL=${LOGGER_URL}
+      - LOGGER_TOKEN=${LOGGER_TOKEN}
+      - MILVUS_HOST=http://milvus-store:19530
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+
+  # Infrastructure Services
+
   rabbitmq:
     container_name: chat-agents-queue
     image: rabbitmq:3.13-management
@@ -77,3 +98,33 @@ services:
     image: mongo:bionic
     ports:
       - "27017:27017"
+
+  bloomd:
+    container_name: bloomd
+    image: frankhart2018/bloomd:0.1
+    ports:
+      - "8673:8673"
+
+  milvus:
+    container_name: milvus-store
+    image: milvusdb/milvus:v2.4.5
+    environment:
+      - ETCD_USE_EMBED=true
+      - ETCD_DATA_DIR=/var/lib/milvus/etcd
+      - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+      - COMMON_STORAGETYPE=local
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/infra-setup/embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+      - "2379:2379"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+    command: milvus run standalone
+    
