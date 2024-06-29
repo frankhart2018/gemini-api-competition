@@ -27,11 +27,14 @@ class UserEmbeddingsDao:
             data=[self.__get_embedding_as_array(user_entry)],
         )
 
-    def search(self, user_entry: UserEntry) -> List[UserEntry]:
+    def search(
+        self, user_entry: UserEntry, count: int = 0, filter: List[str] = []
+    ) -> List[UserEntry]:
         matches = self.__client.search(
             collection_name=USER_MATCHING_COLLECTION,
             query_vector=np.array(user_entry.user_summary_embedding),
-            limit=NUM_MATCHES,
+            filter=filter,
+            limit=NUM_MATCHES if count == 0 else count,
         )
 
         match_entities = [UserEntry(**match["entity"]) for match in matches]
