@@ -35,6 +35,7 @@ services:
     depends_on:
       - mongodb
       - queue-api-gateway
+      - minio
     ports:
       - "4000:4000"
     environment:
@@ -46,6 +47,10 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - LOGGER_URL=${LOGGER_URL}
       - LOGGER_TOKEN=${LOGGER_TOKEN}
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+      - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
 
   queue-api-gateway:
     container_name: queue-api-gateway
@@ -80,7 +85,7 @@ services:
     environment:
       - LOGGER_URL=${LOGGER_URL}
       - LOGGER_TOKEN=${LOGGER_TOKEN}
-      - MILVUS_HOST=http://milvus-store:19530
+      - MILVUS_HOST=http://milvus:19530
       - RABBIT_HOST=rabbitmq
       - RABBIT_PORT=5672
 
@@ -127,4 +132,16 @@ services:
       timeout: 20s
       retries: 3
     command: milvus run standalone
-    
+
+  minio:
+    container_name: minio
+    image: quay.io/minio/minio
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/minio/data:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:?Root user name is required for minio}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:?Root password is required for minio}
+    ports:
+      - "9010:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
