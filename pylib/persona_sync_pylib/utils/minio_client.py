@@ -33,4 +33,9 @@ class MinioClient:
             self.upload_file(bucket_name, object_name, file_path, content_type)
 
     def download_file(self, bucket_name: str, object_name: str, file_path: str) -> None:
-        self.__client.fget_object(bucket_name, object_name, file_path)
+        try:
+            self.__client.fget_object(bucket_name, object_name, file_path)
+        except S3Error:
+            raise FileNotFoundError(
+                f"File {object_name} not found in bucket {bucket_name}"
+            )
