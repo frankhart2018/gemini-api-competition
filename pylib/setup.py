@@ -11,5 +11,6 @@ setup(
         "pymongo>=4.7.0",
         "pydantic==2.7.1",
         "pymilvus==2.4.3",
+        "minio>=7.1.0",
     ],
 )
