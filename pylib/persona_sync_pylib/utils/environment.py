@@ -13,3 +13,7 @@ MONGO_HOST = os.getenv("MONGO_HOST", "mongodb://localhost:27017/")
 MILVUS_HOST = os.getenv("MILVUS_HOST", "http://localhost:19530/")
 
 EMBEDDING_SIZE = int(os.getenv("EMBEDDING_SIZE", 768))
+
+MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "localhost:9000")
+MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
