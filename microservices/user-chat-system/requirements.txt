@@ -1,0 +1,3 @@
+pydantic==2.7.1
+pymongo>=4.7.0
+git+https://github.com/frankhart2018/gemini-api-competition#egg=persona_sync_pylib&subdirectory=pylib

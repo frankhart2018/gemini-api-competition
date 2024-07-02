@@ -89,6 +89,22 @@ services:
       - RABBIT_HOST=rabbitmq
       - RABBIT_PORT=5672
 
+  user-chat-system:
+    build:
+      context: ./microservices/user-chat-system
+      args:
+        - LOGGER_URL=${LOGGER_URL:?Logger URL is required}
+        - LOGGER_TOKEN=${LOGGER_TOKEN:?Logger Token is required}
+    depends_on:
+      - rabbitmq
+      - mongodb
+    environment:
+      - LOGGER_URL=${LOGGER_URL}
+      - LOGGER_TOKEN=${LOGGER_TOKEN}
+      - MONGO_HOST=mongodb://mongodb:27017/user-chat-system
+      - RABBIT_HOST=rabbitmq
+      - RABBIT_PORT=5672
+
   # Infrastructure Services
 
   rabbitmq:
