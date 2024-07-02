@@ -2,9 +2,11 @@ import * as userAnswerDao from "./useranswer-dao.js";
 import * as userDao from "../users/user-dao.js";
 import {logger, LogLevel} from "../../utils/logging.js";
 import dotenv from 'dotenv';
+import uploadUserQuestions from "./uploadUserQuestions.js";
 const UserAnswerController = (app) => {
     app.post("/api/questions/answers", createUpdateUserAnswer);
     app.get("/api/useranswers/:userId", getUserAnswers);
+    app.post("/api/questions/:userId", uploadUserQuestions);
 }
 dotenv.config();
 const PROMPT_URL = process.env.PROMPT_URL;
@@ -14,8 +16,8 @@ const createUpdateUserAnswer = async (req, res) => {
         if (!userId) {
             return res.status(400).send({ message: "User ID is required" });
         }
-        if (!Array.isArray(questionAnsObj) || !questionAnsObj.every(obj => obj.hasOwnProperty('questionText') && obj.hasOwnProperty('answer'))) {
-            return res.status(400).send({ message: "questionAnsObj must be an array of objects with questionText and answer properties" });
+        if (!Array.isArray(questionAnsObj) || !questionAnsObj.every(obj => obj.hasOwnProperty('questionText') && obj.hasOwnProperty('answer') && obj.hasOwnProperty('isRequired') && obj.hasOwnProperty('status')) ){
+            return res.status(400).send({ message: "questionAnsObj must be an array of objects with questionText, answer, isRequired and status properties" });
         }
         //insert user_id or update if already exists
         const userPresent = await userDao.findUserById(userId);
@@ -23,10 +25,41 @@ const createUpdateUserAnswer = async (req, res) => {
            // user not present return 404
            return res.status(404).send({ message: "User not found" });
         }
-        const prompt = generatePrompt(questionAnsObj);
-        const summary = await generateSummary(prompt);
+        const userAnswers = await userAnswerDao.findUser(userId);
+        let updatedQuestionAnsObj=[];
 
-        await userAnswerDao.createOrUpdateUserAnswer(userId, questionAnsObj,summary);
+        if (userAnswers) {
+            const existingQuestionAnsObj = userAnswers.questionAnsObj;
+            // Create a map for quick lookup of existing questions by their text
+            const existingQAMap = new Map(existingQuestionAnsObj.map(qa => [qa.questionText, qa]));
+        
+            // Update existing questions or add new ones from the incoming list
+            updatedQuestionAnsObj = questionAnsObj.map(newQA => {
+                const existingQA = existingQAMap.get(newQA.questionText);
+                if (existingQA) {
+                    return {
+                        questionText: newQA.questionText,
+                        answer: newQA.answer,
+                        isRequired: newQA.isRequired,
+                        status: newQA.status
+                    };
+                } else {
+                    return newQA;
+                }
+            });
+            // Add any questions from the existing list that are not in the incoming list
+            existingQuestionAnsObj.forEach(existingQA => {
+                if (!updatedQuestionAnsObj.some(newQA => newQA.questionText === existingQA.questionText)) {
+                    updatedQuestionAnsObj.push(existingQA);
+                }
+            });
+        }
+        
+        const prompt = generatePrompt(updatedQuestionAnsObj);
+        const summary = await generateSummary(prompt);
+ 
+      
+        await userAnswerDao.createOrUpdateUserAnswer(userId, updatedQuestionAnsObj,summary);
         res.send({ message: "User info added successfully" });
     } catch (err) {
         logger.log(LogLevel.ERROR, err);
