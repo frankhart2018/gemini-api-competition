@@ -3,7 +3,6 @@ from enum import Enum
 
 
 class ChatState(Enum):
-    SOCKET_SEND = "SOCKET_SEND"
     DUMP = "DUMP"
 
 
