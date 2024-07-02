@@ -1,7 +1,6 @@
 import json
 from typing import Optional
 import pydantic
-import websockets
 from persona_sync_pylib.queue.consumer import Consumer
 from persona_sync_pylib.types.user_chat_system import ChatState, ChatRequest
 from persona_sync_pylib.utils.logger import Logger, LogLevel

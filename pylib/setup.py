@@ -12,5 +12,6 @@ setup(
         "pydantic==2.7.1",
         "pymilvus==2.4.3",
         "minio>=7.1.0",
+        "requests>=2.26.0",
     ],
 )
