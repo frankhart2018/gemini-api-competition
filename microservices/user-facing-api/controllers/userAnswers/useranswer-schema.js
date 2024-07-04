@@ -7,11 +7,7 @@ const UserAnswerSchema = mongoose.Schema({
     required: true
   },
   questionAnsObj: [{
-    // question_: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'Question',
-    //   required: true
-    // },
+   
     questionText:{
       type: String,
       required: true
@@ -19,7 +15,12 @@ const UserAnswerSchema = mongoose.Schema({
     answer: {
       type: String,
       required: true
-    }
+    },
+    isRequired: {
+      type: Boolean,
+      default: false,
+    },
+    status:{type:String,enum:['pending','accepted','declined'],default:'pending'}
   }],
   userSummary:{
     type: String,
