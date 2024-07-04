@@ -16,7 +16,7 @@ const createUpdateUserAnswer = async (req, res) => {
         if (!userId) {
             return res.status(400).send({ message: "User ID is required" });
         }
-        if (!Array.isArray(questionAnsObj) || !questionAnsObj.every(obj => obj.hasOwnProperty('questionText') && obj.hasOwnProperty('answer') && obj.hasOwnProperty('isRequired') && obj.hasOwnProperty('status')) ){
+        if (!Array.isArray(questionAnsObj) || !questionAnsObj.every(obj => obj.hasOwnProperty('questionText') && obj.hasOwnProperty('answer') && obj.hasOwnProperty('isRequired') && obj.hasOwnProperty('status') && obj.hasOwnProperty('_id')) && mongoose.Types.ObjectId.isValid(obj._id)){
             return res.status(400).send({ message: "questionAnsObj must be an array of objects with questionText, answer, isRequired and status properties" });
         }
         //insert user_id or update if already exists
@@ -31,25 +31,29 @@ const createUpdateUserAnswer = async (req, res) => {
         if (userAnswers) {
             const existingQuestionAnsObj = userAnswers.questionAnsObj;
             // Create a map for quick lookup of existing questions by their text
-            const existingQAMap = new Map(existingQuestionAnsObj.map(qa => [qa.questionText, qa]));
+            const existingQAMap = new Map(existingQuestionAnsObj.map(qa => [qa._id.toString(), qa]));
         
             // Update existing questions or add new ones from the incoming list
             updatedQuestionAnsObj = questionAnsObj.map(newQA => {
-                const existingQA = existingQAMap.get(newQA.questionText);
+                const existingQA = existingQAMap.get(newQA._id.toString());
                 if (existingQA) {
                     return {
+                        _id: existingQA._id,
                         questionText: newQA.questionText,
                         answer: newQA.answer,
                         isRequired: newQA.isRequired,
                         status: newQA.status
                     };
                 } else {
-                    return newQA;
+                    return {
+                        ...newQA,
+                        _id: new mongoose.Types.ObjectId(newQAIdStr)
+                    };
                 }
             });
             // Add any questions from the existing list that are not in the incoming list
             existingQuestionAnsObj.forEach(existingQA => {
-                if (!updatedQuestionAnsObj.some(newQA => newQA.questionText === existingQA.questionText)) {
+                if (!updatedQuestionAnsObj.some(newQA => newQA._id === existingQA._id)) {
                     updatedQuestionAnsObj.push(existingQA);
                 }
             });
