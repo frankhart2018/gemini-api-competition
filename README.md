@@ -1,11 +1,5 @@
 # Gemini API Competition
 
-## Time to competition end
-
-<p align="center">
-  <img src="http://i.countdownmail.com/3baikt.gif" />
-</p>
-
 ## Frontend Setup
 
 ### Software requirements
